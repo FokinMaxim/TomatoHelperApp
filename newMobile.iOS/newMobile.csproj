@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <ProduceReferenceAssemblyInOutDir>true</ProduceReferenceAssemblyInOutDir>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Fonts\Grandstander-Light.ttf" />
+    <None Remove="Fonts\Grandstander.ttf" />
+    <None Remove="Fonts\GrandstanderNarrow.ttf" />
+    <None Remove="tomato.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2662" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts\Grandstander-Light.ttf" />
+    <EmbeddedResource Include="Fonts\Grandstander.ttf" />
+    <EmbeddedResource Include="Fonts\GrandstanderNarrow.ttf" />
+    <EmbeddedResource Include="tomato.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="TomatoLabel.xaml.cs">
+      <DependentUpon>TomatoLabel.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="TomatoLabel.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

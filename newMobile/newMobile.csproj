@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <ProduceReferenceAssemblyInOutDir>true</ProduceReferenceAssemblyInOutDir>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Fonts\Grandstander-Light.ttf" />
+    <None Remove="Fonts\Grandstander.ttf" />
+    <None Remove="Fonts\GrandstanderNarrow.ttf" />
+    <None Remove="images\AddTaskButton.png" />
+    <None Remove="images\calender.png" />
+    <None Remove="images\settings.png" />
+    <None Remove="images\settingsWithBackGround.png" />
+    <None Remove="images\taskBackground.png" />
+    <None Remove="images\tasklist.png" />
+    <None Remove="images\timer.png" />
+    <None Remove="images\Vector.svg" />
+    <None Remove="tomato.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2662" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts\Grandstander-Light.ttf" />
+    <EmbeddedResource Include="Fonts\Grandstander.ttf" />
+    <EmbeddedResource Include="Fonts\GrandstanderNarrow.ttf" />
+    <EmbeddedResource Include="images\AddTaskButton.png" />
+    <EmbeddedResource Include="images\calender.png" />
+    <EmbeddedResource Include="images\settings.png" />
+    <EmbeddedResource Include="images\settingsWithBackGround.png" />
+    <EmbeddedResource Include="images\taskBackground.png" />
+    <EmbeddedResource Include="images\tasklist.png" />
+    <EmbeddedResource Include="images\timer.png" />
+    <EmbeddedResource Include="tomato.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="TomatoLabel.xaml.cs">
+      <DependentUpon>TomatoLabel.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="CalendarPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Settings.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="TaskListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="TomatoLabel.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
