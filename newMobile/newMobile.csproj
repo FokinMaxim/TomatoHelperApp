@@ -18,12 +18,18 @@
     <None Remove="images\AddTaskButton.png" />
     <None Remove="images\calender.png" />
     <None Remove="images\settings.png" />
+    <None Remove="images\settingsLightBackground.png" />
+    <None Remove="images\settingsNoBackground.png" />
     <None Remove="images\settingsWithBackGround.png" />
     <None Remove="images\taskBackground.png" />
     <None Remove="images\tasklist.png" />
     <None Remove="images\timer.png" />
     <None Remove="images\Vector.svg" />
     <None Remove="tomato.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="images\settingsLightBackground.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,11 +44,16 @@
     <EmbeddedResource Include="images\AddTaskButton.png" />
     <EmbeddedResource Include="images\calender.png" />
     <EmbeddedResource Include="images\settings.png" />
-    <EmbeddedResource Include="images\settingsWithBackGround.png" />
     <EmbeddedResource Include="images\taskBackground.png" />
     <EmbeddedResource Include="images\tasklist.png" />
     <EmbeddedResource Include="images\timer.png" />
     <EmbeddedResource Include="tomato.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Drawing.Common">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\Xamarin.iOS\v1.0\Facades\System.Drawing.Common.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -64,5 +75,9 @@
     <EmbeddedResource Update="TomatoLabel.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="saves\" />
   </ItemGroup>
 </Project>

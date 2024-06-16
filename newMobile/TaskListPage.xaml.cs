@@ -7,52 +7,56 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using static System.Net.Mime.MediaTypeNames;
+using System.Drawing;
+
 
 namespace newMobile
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TaskListPage : ContentPage
     {
-        public Grid MyLayout = new Grid();
+        public RelativeLayout MyLayout = new RelativeLayout(){};
         
         public TaskListPage()
         {
-            
-            BackgroundColor = Color.FromHex("#FF7373");
+            BackgroundColor = Xamarin.Forms.Color.FromHex("#FF7373");
 
-            var TimerButton = ButtonCreator.CreateImageButton("newMobile.images.timer.png",
-                LayoutOptions.End, LayoutOptions.Center, 10);
-            TimerButton.Clicked += StartTimer;
+            var buttons = ButtonCreator.AlternativeWay(new string[] {
+                "newMobile.images.timer.png", "newMobile.images.tasklist.png","newMobile.images.calender.png"  });
+            buttons["timer"].Clicked += StartTimer;
+            buttons["calender"].Clicked += MoveToCalendar;
 
+            var buttonsSize = new Xamarin.Forms.Size(40, 40);
+            MyLayout.Children.Add(buttons["calender"], () => new Xamarin.Forms.Rectangle(
+                30, this.Height- buttonsSize.Height - 30, 
+                buttonsSize.Width, buttonsSize.Height));
 
-            var TaskListButton = ButtonCreator.CreateImageButton("newMobile.images.tasklist.png",
-                LayoutOptions.End, LayoutOptions.End, 15);
+            MyLayout.Children.Add(buttons["timer"], () => new Xamarin.Forms.Rectangle(
+                this.Width/2 - buttonsSize.Width/2, this.Height - buttonsSize.Height - 30,
+                buttonsSize.Width, buttonsSize.Height));
 
-
-            var CalendarButton = ButtonCreator.CreateImageButton("newMobile.images.calender.png",
-                            LayoutOptions.End, LayoutOptions.Start, 10);
-            CalendarButton.Clicked += MoveToCalendar;
-            
-            MyLayout.Children.Add(TimerButton);
-            MyLayout.Children.Add(TaskListButton);
-            MyLayout.Children.Add(CalendarButton);
+            MyLayout.Children.Add(buttons["tasklist"], () => new Xamarin.Forms.Rectangle(
+                this.Width - 30 - buttonsSize.Width, this.Height - buttonsSize.Height - 30,
+                buttonsSize.Width, buttonsSize.Height));
         }
 
 
         protected override void OnAppearing()
         {
             var TaskList = new TaskStack(MyLayout);
-            TaskList.AddToLayout();
             Content = MyLayout;
         }
 
         private async void MoveToCalendar(object sender, EventArgs e)
         {
+            UnifiedDataStorage.SaveTaskList();
             await Navigation.PushAsync(new CalendarPage());
         }
 
         private async void StartTimer(object sender, EventArgs e)
         {
+            UnifiedDataStorage.SaveTaskList();
             await Navigation.PushAsync(new MainPage());
         }
     }
@@ -60,57 +64,42 @@ namespace newMobile
     public class TaskStack
     {
         private static ImageButton AddButton;
-        private static ImageButton[] Tasks;
-        private Grid Layout;
-        
+        private static List<TaskListElement> Tasks;
+        private RelativeLayout MainLayout;
+        private ScrollView ScrollLayout;
+        private StackLayout StackLayout;
 
-        public TaskStack(Grid layout)
+
+        public TaskStack(RelativeLayout layout)
         {
+            StackLayout = new StackLayout() { BackgroundColor = Xamarin.Forms.Color.FromHex("#FF7373") };
+            ScrollLayout = new ScrollView() { BackgroundColor = Xamarin.Forms.Color.FromHex("#FF7373"), Content = StackLayout };
+
+
             AddButton = new ImageButton
             {
                 Source = ImageSource.FromResource("newMobile.images.AddTaskButton.png"),
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-
-                Padding = new Thickness(10),
-                Margin = new Thickness(10),
-                Scale = 2
+                Scale = 2,
+                Margin = new Thickness(20)
             };
             AddButton.Clicked += AddElement;
-            Tasks = new ImageButton[] { };
-            Layout = layout;
+
+            Tasks = UnifiedDataStorage.TaskListData;
+            foreach (var task in Tasks) { StackLayout.Children.Add(task.DisplayElement); }
+            StackLayout.Children.Add(AddButton);
+
+            MainLayout = layout;
+            MainLayout.Children.Add(ScrollLayout, () => new Xamarin.Forms.Rectangle(20, 50, MainLayout.Width - 40, MainLayout.Height - 200));
         }
         private void AddElement(object sender, EventArgs e)
         {
-            var NewButton = AddButton = new ImageButton
-            {
-                Source = ImageSource.FromResource("newMobile.images.taskBackground.png"),
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
+            var newTask = new TaskListElement("task", new DateTime(1, 1, 1, 0, 0, 0));
+            Tasks = Tasks.Append(newTask).ToList();
+            StackLayout.Children.Add(newTask.DisplayElement);
 
-                Padding = new Thickness(10),
-                Margin = new Thickness(10),
-                Scale = 2
-            };
-            AddButton.Clicked += ChangeElement;
-            Tasks.Append(NewButton);
-            AddToLayout();
-        }
-
-        private void ChangeElement(object sender, EventArgs e)
-        {
-
-        }
-
-        public void AddToLayout()
-        {
-            if (Layout.Children.Contains(AddButton)) Layout.Children.Remove(AddButton);
-            foreach(var task in Tasks)
-            {
-                if(!Layout.Children.Contains(task)) Layout.Children.Add(task);
-                
-            }
-            Layout.Children.Add(AddButton);
+            if (StackLayout.Children.Contains(AddButton)) StackLayout.Children.Remove(AddButton);
+            StackLayout.Children.Add(AddButton);
+            UnifiedDataStorage.RefreshTaskList(Tasks);
         }
     }
 }

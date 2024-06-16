@@ -12,35 +12,33 @@ namespace newMobile
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CalendarPage : ContentPage
     {
-        public Grid MyLayout = new Grid();
+        public RelativeLayout MyLayout = new RelativeLayout() { };
         public CalendarPage()
         {
             BackgroundColor = Color.FromHex("#FF7373");
 
             var Lab = new Label()
-            {
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center,
-            };
-            Lab.Text = "Calendar";
-            MyLayout.Children.Add(Lab);
+            {Text = "Calendar"};
 
-            var TimerButton = ButtonCreator.CreateImageButton("newMobile.images.timer.png",
-                LayoutOptions.End, LayoutOptions.Center, 10);
-            TimerButton.Clicked += StartTimer;
+            MyLayout.Children.Add(Lab, () => new Rectangle(20, 20, 100, 100));
 
+            var buttons = ButtonCreator.AlternativeWay(new string[] {
+                "newMobile.images.timer.png", "newMobile.images.tasklist.png","newMobile.images.calender.png"  });
+            buttons["timer"].Clicked += StartTimer;
+            buttons["tasklist"].Clicked += MoveToTaskList;
 
-            var TaskListButton = ButtonCreator.CreateImageButton("newMobile.images.tasklist.png",
-                LayoutOptions.End, LayoutOptions.End, 15);
-            TaskListButton.Clicked += MoveToTaskList;
+            var buttonsSize = new Size(40, 40);
+            MyLayout.Children.Add(buttons["calender"], () => new Rectangle(
+                30, this.Height - buttonsSize.Height - 30,
+                buttonsSize.Width, buttonsSize.Height));
 
+            MyLayout.Children.Add(buttons["timer"], () => new Rectangle(
+                this.Width / 2 - buttonsSize.Width / 2, this.Height - buttonsSize.Height - 30,
+                buttonsSize.Width, buttonsSize.Height));
 
-            var CalendarButton = ButtonCreator.CreateImageButton("newMobile.images.calender.png",
-                            LayoutOptions.End, LayoutOptions.Start, 10);
-
-            MyLayout.Children.Add(TimerButton);
-            MyLayout.Children.Add(TaskListButton);
-            MyLayout.Children.Add(CalendarButton);
+            MyLayout.Children.Add(buttons["tasklist"], () => new Rectangle(
+                this.Width - 30 - buttonsSize.Width, this.Height - buttonsSize.Height - 30,
+                buttonsSize.Width, buttonsSize.Height));
 
         }
         protected override void OnAppearing()

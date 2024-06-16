@@ -14,17 +14,19 @@ namespace newMobile
     {
         public static bool FirstEnteryIndicator = true;
         public Tomato MyTomato = new Tomato();
-        public Grid MyLayout = new Grid();
+        public RelativeLayout MyLayout = new RelativeLayout() { };
         public MainPage()
         {
+            if (UnifiedDataStorage.IsJustOpened)
+            {
+                UnifiedDataStorage.IsJustOpened = false;
+                UnifiedDataStorage.PrepareStorage();
+            }
             BackgroundColor = Color.FromHex("#FF7373");
+            UnifiedDataStorage.GetSavedValues();
 
-            var Lab = new Label() {
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center,
-            };
-            Lab.Text = "Timer";
-            MyLayout.Children.Add(Lab);
+            var Lab = new Label() { Text = "Timer" };
+            MyLayout.Children.Add(Lab, () => new Rectangle(20, 20, 100, 100));
 
             if (FirstEnteryIndicator) 
             { 
@@ -32,65 +34,31 @@ namespace newMobile
                 FirstEnteryIndicator = false;
             }
 
-            var TimerButton = new ImageButton
-            {
-                Source = ImageSource.FromResource("newMobile.images.timer.png"),
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.End,
+            var buttons = ButtonCreator.AlternativeWay(new string[] {
+                "newMobile.images.timer.png", "newMobile.images.tasklist.png", 
+                "newMobile.images.calender.png", "newMobile.images.settings.png"  });
 
-                Padding = new Thickness(5),
-                Margin = new Thickness(10),
+            buttons["timer"].Clicked += StartTimer;
+            buttons["tasklist"].Clicked += MoveToTaskList;
+            buttons["calender"].Clicked += MoveToCalendar;
+            buttons["settings"].Clicked += MoveToSettings;
 
-                Scale = 2,
-            };
-            TimerButton.Clicked += StartTimer;
+            var buttonsSize = new Size(40, 40);
+            MyLayout.Children.Add(buttons["calender"], () => new Rectangle(
+                30, this.Height - buttonsSize.Height - 30,
+                buttonsSize.Width, buttonsSize.Height));
 
-            var TaskListButton = new ImageButton
-            {
-                Source = ImageSource.FromResource("newMobile.images.tasklist.png"),
-                HorizontalOptions = LayoutOptions.End,
-                VerticalOptions = LayoutOptions.End,
+            MyLayout.Children.Add(buttons["timer"], () => new Rectangle(
+                this.Width / 2 - buttonsSize.Width / 2, this.Height - buttonsSize.Height - 30,
+                buttonsSize.Width, buttonsSize.Height));
 
-                Padding = new Thickness(5),
-                Margin = new Thickness(15),
+            MyLayout.Children.Add(buttons["tasklist"], () => new Rectangle(
+                this.Width - 30 - buttonsSize.Width, this.Height - buttonsSize.Height - 30,
+                buttonsSize.Width, buttonsSize.Height));
 
-                Scale =2,
-
-            };
-            TaskListButton.Clicked += MoveToTaskList;
-
-            var SettingsButton = new ImageButton
-            {
-                Source = ImageSource.FromResource("newMobile.images.settings.png"),
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.End,
-                
-                Padding = new Thickness(5),
-                Margin = new Thickness(100),
-
-                Scale = 2,
-            };
-            SettingsButton.Clicked += MoveToSettings;
-
-            var CalendarButton = new ImageButton
-            {
-                Source = ImageSource.FromResource("newMobile.images.calender.png"),
-                HorizontalOptions = LayoutOptions.Start,
-                VerticalOptions = LayoutOptions.End,
-
-                Padding = new Thickness(5),
-                Margin = new Thickness(10),
-
-                Scale = 2,
-            };
-            CalendarButton.Clicked += MoveToCalendar;
-
-            
-            MyLayout.Children.Add(SettingsButton);
-            MyLayout.Children.Add(TimerButton);
-            MyLayout.Children.Add(TaskListButton);
-            MyLayout.Children.Add(CalendarButton);
-
+            MyLayout.Children.Add(buttons["settings"], () => new Rectangle(
+                this.Width / 2 - buttonsSize.Width / 2, this.Height - 2 * buttonsSize.Height - 80,
+                buttonsSize.Width, buttonsSize.Height));
         }
 
 

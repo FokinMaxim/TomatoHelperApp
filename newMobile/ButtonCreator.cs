@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -25,6 +26,24 @@ namespace newMobile
 
                 Scale = 2,
             };
+        }
+        public static Dictionary<string, ImageButton> AlternativeWay(string[] sourses)
+        {
+            var DictButton = new Dictionary<string, ImageButton>();
+
+            foreach(var sourse in sourses)
+            {
+                var nameSourse = sourse.Split('.');
+                DictButton[nameSourse[nameSourse.Length - 2]] = new ImageButton
+                {
+                    Source = ImageSource.FromResource(sourse),
+                    Scale = 2,
+
+                    Margin = new Thickness(0),
+                };
+            }
+
+            return DictButton;
         }
     }
 }

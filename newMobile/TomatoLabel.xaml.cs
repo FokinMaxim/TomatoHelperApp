@@ -34,7 +34,7 @@ namespace newMobile
                 Jump();
             };
             MyLayout.GestureRecognizers.Add(trr);
-            
+           
         }
 
         public void TomatoLabelAnimation()
