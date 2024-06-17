@@ -38,7 +38,7 @@ namespace newMobile
                 {
                     Source = ImageSource.FromResource(sourse),
                     Scale = 2,
-
+                    BackgroundColor = Color.FromHex("#FF7373"),
                     Margin = new Thickness(0),
                 };
             }

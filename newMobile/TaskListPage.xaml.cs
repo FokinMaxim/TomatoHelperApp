@@ -80,6 +80,7 @@ namespace newMobile
             {
                 Source = ImageSource.FromResource("newMobile.images.AddTaskButton.png"),
                 Scale = 2,
+                BackgroundColor = Xamarin.Forms.Color.FromHex("#FF7373"),
                 Margin = new Thickness(20)
             };
             AddButton.Clicked += AddElement;
@@ -89,7 +90,7 @@ namespace newMobile
             StackLayout.Children.Add(AddButton);
 
             MainLayout = layout;
-            MainLayout.Children.Add(ScrollLayout, () => new Xamarin.Forms.Rectangle(20, 50, MainLayout.Width - 40, MainLayout.Height - 200));
+            MainLayout.Children.Add(ScrollLayout, () => new Xamarin.Forms.Rectangle(20, 50, MainLayout.Width - 120, MainLayout.Height - 200));
         }
         private void AddElement(object sender, EventArgs e)
         {

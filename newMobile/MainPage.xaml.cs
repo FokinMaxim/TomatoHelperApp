@@ -15,18 +15,19 @@ namespace newMobile
         public static bool FirstEnteryIndicator = true;
         public Tomato MyTomato = new Tomato();
         public RelativeLayout MyLayout = new RelativeLayout() { };
+        public MainTimer HeadTimer;
+        public Dictionary<string, ImageButton> Buttons;
         public MainPage()
         {
+            BackgroundColor = Color.FromHex("#FF7373");
+            
             if (UnifiedDataStorage.IsJustOpened)
             {
                 UnifiedDataStorage.IsJustOpened = false;
                 UnifiedDataStorage.PrepareStorage();
             }
-            BackgroundColor = Color.FromHex("#FF7373");
-            UnifiedDataStorage.GetSavedValues();
-
-            var Lab = new Label() { Text = "Timer" };
-            MyLayout.Children.Add(Lab, () => new Rectangle(20, 20, 100, 100));
+            HeadTimer = new MainTimer(UnifiedDataStorage.TimerMinutes[0], UnifiedDataStorage.TimerSeconds[1]);
+            MyLayout.Children.Add(HeadTimer.label, () => new Rectangle(this.Width / 4.7, this.Height / 4, 300, 500));
 
             if (FirstEnteryIndicator) 
             { 
@@ -34,29 +35,30 @@ namespace newMobile
                 FirstEnteryIndicator = false;
             }
 
-            var buttons = ButtonCreator.AlternativeWay(new string[] {
-                "newMobile.images.timer.png", "newMobile.images.tasklist.png", 
+            Buttons = ButtonCreator.AlternativeWay(new string[] {
+                "newMobile.images.timer.png", "newMobile.images.tasklist.png",
                 "newMobile.images.calender.png", "newMobile.images.settings.png"  });
-
-            buttons["timer"].Clicked += StartTimer;
-            buttons["tasklist"].Clicked += MoveToTaskList;
-            buttons["calender"].Clicked += MoveToCalendar;
-            buttons["settings"].Clicked += MoveToSettings;
+            //foreach (var button in Buttons)
+            //    button.Value.BackgroundColor = HeadTimer.BackgroundColors;
+            Buttons["timer"].Clicked += StartTimer;
+            Buttons["tasklist"].Clicked += MoveToTaskList;
+            Buttons["calender"].Clicked += MoveToCalendar;
+            Buttons["settings"].Clicked += MoveToSettings;
 
             var buttonsSize = new Size(40, 40);
-            MyLayout.Children.Add(buttons["calender"], () => new Rectangle(
+            MyLayout.Children.Add(Buttons["calender"], () => new Rectangle(
                 30, this.Height - buttonsSize.Height - 30,
                 buttonsSize.Width, buttonsSize.Height));
 
-            MyLayout.Children.Add(buttons["timer"], () => new Rectangle(
+            MyLayout.Children.Add(Buttons["timer"], () => new Rectangle(
                 this.Width / 2 - buttonsSize.Width / 2, this.Height - buttonsSize.Height - 30,
                 buttonsSize.Width, buttonsSize.Height));
 
-            MyLayout.Children.Add(buttons["tasklist"], () => new Rectangle(
+            MyLayout.Children.Add(Buttons["tasklist"], () => new Rectangle(
                 this.Width - 30 - buttonsSize.Width, this.Height - buttonsSize.Height - 30,
                 buttonsSize.Width, buttonsSize.Height));
 
-            MyLayout.Children.Add(buttons["settings"], () => new Rectangle(
+            MyLayout.Children.Add(Buttons["settings"], () => new Rectangle(
                 this.Width / 2 - buttonsSize.Width / 2, this.Height - 2 * buttonsSize.Height - 80,
                 buttonsSize.Width, buttonsSize.Height));
         }
@@ -66,6 +68,20 @@ namespace newMobile
         protected override void OnAppearing()
         {
             Content = MyLayout;
+            Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+            {
+                if (HeadTimer.ChangeColor)
+                {
+                    HeadTimer.label.Text = ((HeadTimer.Minutes < 10) ? "0" + HeadTimer.Minutes.ToString() : HeadTimer.Minutes.ToString()) + ":" + ((HeadTimer.Second < 10) ? "0" + HeadTimer.Second.ToString() : HeadTimer.Second.ToString());
+                    this.BackgroundColor = HeadTimer.BackgroundColors;
+                    foreach (var button in Buttons)
+                        button.Value.BackgroundColor = HeadTimer.BackgroundColors;
+                    HeadTimer.ChangeColor = false;
+                }
+
+
+                return true;
+            });
         }
 
         private async void MoveToCalendar(object sender, EventArgs e)
@@ -84,6 +100,7 @@ namespace newMobile
 
         private async void StartTimer(object sender, EventArgs e)
         {
+            if (HeadTimer.Run == false) HeadTimer.mainTimer();
         }
     }
 }

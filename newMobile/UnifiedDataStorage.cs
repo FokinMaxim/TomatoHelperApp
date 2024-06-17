@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Xamarin.Forms;
 
@@ -10,8 +12,9 @@ namespace newMobile
     public static class UnifiedDataStorage
     {
         public static List<TaskListElement> TaskListData = new List<TaskListElement> { };
-        public static List<int> aboba = new List<int>();
         public static bool IsJustOpened = true;
+        public static List<int> TimerMinutes = new List<int>() {25, 5, 25, 5, 25, 10 };
+        public static List<int> TimerSeconds = new List<int>() { 0, 0, 0, 0, 0, 0 };
 
         public async static void RefreshTaskList(List<TaskListElement> taskList)
         {
@@ -21,15 +24,54 @@ namespace newMobile
         public static void PrepareStorage()
         {
             var docs = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            
+            
             TaskListData = new List<TaskListElement> { };
-           
-            var TLdata = File.ReadAllText(Path.Combine(docs, "taskListData.txt"));
-            foreach(var elem in TLdata.Split())
+            if (File.Exists(Path.Combine(docs, "taskListData.txt")))
             {
-                var elemdata = elem.Split('/');
-                if (elemdata.Length != 3) continue;
-                TaskListData.Add(new TaskListElement(elemdata[0], new DateTime(1, 1, 1, 1, int.Parse(elemdata[1]), int.Parse(elemdata[2]))));
+                var TLdata = File.ReadAllText(Path.Combine(docs, "taskListData.txt"));
+                foreach(var elem in TLdata.Split())
+                {
+                    var elemdata = elem.Split('/');
+                    if (elemdata.Length != 3) continue;
+                    TaskListData.Add(new TaskListElement(elemdata[0], new DateTime(1, 1, 1, 1, int.Parse(elemdata[1]), int.Parse(elemdata[2]))));
+                }
             }
+
+            if (File.Exists(Path.Combine(docs, "timerData.txt")))
+            {
+                var TimerData = File.ReadAllText(Path.Combine(docs, "timerData.txt")).Split();
+                
+                TimerMinutes = TimerData[0].Split('/').Select(x => int.Parse(x)).ToList();
+                TimerSeconds = TimerData[1].Split('/').Select(x => int.Parse(x)).ToList();
+            }
+        }
+
+        public static void UpdateActivityTime(int minutes, int seconds)
+        {
+            TimerMinutes[0] = minutes;
+            TimerMinutes[2] = minutes;
+            TimerMinutes[4] = minutes;
+
+            TimerSeconds[0] = seconds;
+            TimerSeconds[2] = seconds;
+            TimerSeconds[4] = seconds;
+        }
+
+        public static void UpdateShortRestTime(int minutes, int seconds)
+        {
+            TimerMinutes[1] = minutes;
+            TimerMinutes[3] = minutes;
+
+            TimerSeconds[1] = seconds;
+            TimerSeconds[3] = seconds;
+        }
+
+        public static void UpdateLongRestTime(int minutes, int seconds)
+        {
+            TimerMinutes[5] = minutes;
+
+            TimerSeconds[5] = seconds;
         }
 
         public async static void SaveTaskList()
@@ -46,17 +88,18 @@ namespace newMobile
                 sw.WriteLine(stringBuilder);
             }
             sw.Close();
-
-            Console.WriteLine(File.ReadAllText(filename));
         }
 
-        public static void GetSavedValues()
+        public async static void SaveTimerData()
         {
-            var taskList = new Object();
-            if (Application.Current.Properties.TryGetValue("taskList", out taskList))
-            {
-                TaskListData = (List<TaskListElement>)taskList;
-            }
+            var docs = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var filename = Path.Combine(docs, "timerData.txt");
+
+            StreamWriter sw = new StreamWriter(filename);
+            
+            sw.WriteLine(string.Join("/", TimerMinutes));
+            sw.WriteLine(string.Join("/", TimerSeconds));
+            sw.Close();
         }
 
         public static void DeleteElementFromTaskList(TaskListElement elemToDelete)
@@ -65,11 +108,6 @@ namespace newMobile
             layout.Children.Remove(elemToDelete.DisplayElement);
             TaskListData.Remove(elemToDelete);
         }
-    }
-
-    public class TimerData
-    {
-
     }
 
     public class TaskListElement
@@ -89,14 +127,14 @@ namespace newMobile
 
             var nameLable = new Entry()
             {
-                Placeholder = "Task",
+                Placeholder = name,
                 FontFamily = "Grandstander",
             };
             nameLable.Completed += NameChanged;
 
             var dateLabel = new Entry()
             {
-                Placeholder = "00:00",
+                Placeholder = dateTime.Minute.ToString() + ":" + dateTime.Second.ToString(),
                 FontFamily = "Grandstander",
                 Keyboard = Keyboard.Telephone,
             };

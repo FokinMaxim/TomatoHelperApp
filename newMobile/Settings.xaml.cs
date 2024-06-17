@@ -51,16 +51,19 @@ namespace newMobile
 
         private async void MoveToCalendar(object sender, EventArgs e)
         {
+            UnifiedDataStorage.SaveTimerData();
             await Navigation.PushAsync(new CalendarPage());
         }
 
         private async void MoveToTaskList(object sender, EventArgs e)
         {
+            UnifiedDataStorage.SaveTimerData();
             await Navigation.PushAsync(new TaskListPage());
         }
 
         private async void StartTimer(object sender, EventArgs e)
         {
+            UnifiedDataStorage.SaveTimerData();
             await Navigation.PushAsync(new MainPage());
         }
 
@@ -102,59 +105,86 @@ namespace newMobile
 
             var workEntry = new Entry()
             {
-                Placeholder = "25:00",
+                Placeholder = 
+                ((UnifiedDataStorage.TimerMinutes[0] < 10) ? "0" + UnifiedDataStorage.TimerMinutes[0].ToString() :UnifiedDataStorage.TimerMinutes[0].ToString()) + 
+                ":" + ((UnifiedDataStorage.TimerSeconds[0] < 10) ? "0" + UnifiedDataStorage.TimerSeconds[0].ToString() : UnifiedDataStorage.TimerSeconds[0].ToString()),
+
                 PlaceholderColor = Color.White,
                 TextColor = Color.White,
                 FontSize = 64,
                 FontFamily = "Grandstander",
                 Keyboard = Keyboard.Telephone,
             };
+            workEntry.Completed += SetActivityTime;
             workEntry.TextChanged += timeChanged;
             MyLayout.Children.Add(workEntry, () => new Rectangle(98, 84, 234, 94));
 
             var breakEntry = new Entry()
             {
-                Placeholder = "05:00",
+                Placeholder =
+                ((UnifiedDataStorage.TimerMinutes[1] < 10) ? "0" + UnifiedDataStorage.TimerMinutes[1].ToString() : UnifiedDataStorage.TimerMinutes[1].ToString()) +
+                ":" + ((UnifiedDataStorage.TimerSeconds[1] < 10) ? "0" + UnifiedDataStorage.TimerSeconds[1].ToString() : UnifiedDataStorage.TimerSeconds[1].ToString()),
+
                 PlaceholderColor = Color.White,
                 TextColor = Color.White,
                 FontSize = 64,
                 FontFamily = "Grandstander",
                 Keyboard = Keyboard.Telephone,
             };
+            breakEntry.Completed += SetShortRestTime;    
             breakEntry.TextChanged += timeChanged;
             MyLayout.Children.Add(breakEntry, () => new Rectangle(121, 265, 187, 96));
 
             var longBreakEntry = new Entry()
             {
-                Placeholder = "10:00",
+                Placeholder =
+                ((UnifiedDataStorage.TimerMinutes[5] < 10) ? "0" + UnifiedDataStorage.TimerMinutes[5].ToString() : UnifiedDataStorage.TimerMinutes[5].ToString()) +
+                ":" + ((UnifiedDataStorage.TimerSeconds[5] < 10) ? "0" + UnifiedDataStorage.TimerSeconds[5].ToString() : UnifiedDataStorage.TimerSeconds[5].ToString()),
+                
                 PlaceholderColor = Color.White,
                 TextColor = Color.White,
                 FontSize = 64,
                 FontFamily = "Grandstander",
                 Keyboard = Keyboard.Telephone,
             };
+            longBreakEntry.Completed += SetLongRestTime;
             longBreakEntry.TextChanged += timeChanged;
             MyLayout.Children.Add(longBreakEntry, () => new Rectangle(109, 436, 223, 96));
         }
 
         private void timeChanged(object sender, EventArgs e)
         {
-            var i = 0;
             if (!(sender is Entry)) return;
             var entry = (Entry)sender;
-
-            /*if (!int.TryParse(entry.Text[entry.Text.Length-1].ToString(), out i) || entry.Text.Length > 5)
-            {
-                var newText = entry.Text.Remove(entry.Text.Length-1);
-                entry.Text = newText;
-                return;
-            }*/
-
             if (entry.Text.Length == 3)
             {
                 var newText = entry.Text.Remove(entry.Text.Length - 1) + ":" + entry.Text[entry.Text.Length - 1];
                 entry.Text = newText;
             }
+        }
+        private void SetActivityTime(object sender, EventArgs e)
+        {
+            if (!(sender is Entry)) return;
+            var entry = (Entry)sender;
+            var timerData = entry.Text.Split(':');
+
+            UnifiedDataStorage.UpdateActivityTime(int.Parse(timerData[0]), int.Parse(timerData[1]));
+        }
+        private void SetShortRestTime(object sender, EventArgs e)
+        {
+            if (!(sender is Entry)) return;
+            var entry = (Entry)sender;
+            var timerData = entry.Text.Split(':');
+
+            UnifiedDataStorage.UpdateShortRestTime(int.Parse(timerData[0]), int.Parse(timerData[1]));
+        }
+        private void SetLongRestTime(object sender, EventArgs e)
+        {
+            if (!(sender is Entry)) return;
+            var entry = (Entry)sender;
+            var timerData = entry.Text.Split(':');
+
+            UnifiedDataStorage.UpdateLongRestTime(int.Parse(timerData[0]), int.Parse(timerData[1]));
         }
     }
 }
