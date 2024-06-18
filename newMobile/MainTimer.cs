@@ -49,7 +49,6 @@ namespace newMobile
         }
         public void mainTimer()
         {
-            
             Run = true;
             var i = 0;
             changeTeme(0);

@@ -90,7 +90,7 @@ namespace newMobile
             StackLayout.Children.Add(AddButton);
 
             MainLayout = layout;
-            MainLayout.Children.Add(ScrollLayout, () => new Xamarin.Forms.Rectangle(20, 50, MainLayout.Width - 120, MainLayout.Height - 200));
+            MainLayout.Children.Add(ScrollLayout, () => new Xamarin.Forms.Rectangle(45, 50, MainLayout.Width - 90, MainLayout.Height - 200));
         }
         private void AddElement(object sender, EventArgs e)
         {

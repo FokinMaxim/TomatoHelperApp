@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Xamarin.Forms;
+using Plugin.LocalNotification;
 
 
 namespace newMobile
@@ -129,25 +130,36 @@ namespace newMobile
             {
                 Placeholder = name,
                 FontFamily = "Grandstander",
+                WidthRequest = 100,
             };
             nameLable.Completed += NameChanged;
 
             var dateLabel = new Entry()
             {
-                Placeholder = dateTime.Minute.ToString() + ":" + dateTime.Second.ToString(),
+                Placeholder = ((dateTime.Minute < 10) ? "0" + dateTime.Minute.ToString() : dateTime.Minute.ToString()) +
+                ":" + ((dateTime.Second < 10) ? "0" + dateTime.Second.ToString() : dateTime.Second.ToString()),
                 FontFamily = "Grandstander",
                 Keyboard = Keyboard.Telephone,
+                WidthRequest = 60,
             };
             dateLabel.TextChanged += TimeChanged;
             dateLabel.Completed += NewDateSet;
+
+            var SaveButtun = new Button()
+            {
+                Text = "Save",
+                BackgroundColor = Color.FromHex("#FFAAAA"),
+                VerticalOptions = LayoutOptions.Center,
+            };
 
             DeleteButton = new Button()
             {
                 Text = "Delete",
                 TextColor = Color.Red,
                 BackgroundColor = Color.FromHex("#FFAAAA"),
-                HorizontalOptions = LayoutOptions.End,
+                HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Center,
+                Margin = 5
             };
             DeleteButton.Clicked += DeleteElement;
 
@@ -188,16 +200,10 @@ namespace newMobile
 
         private void TimeChanged(object sender, EventArgs e)
         {
+ 
             var i = 0;
             if (!(sender is Entry)) return;
             var entry = (Entry)sender;
-
-            /*if (!int.TryParse(entry.Text[entry.Text.Length-1].ToString(), out i) || entry.Text.Length > 5)
-            {
-                var newText = entry.Text.Remove(entry.Text.Length-1);
-                entry.Text = newText;
-                return;
-            }*/
 
             if (entry.Text.Length == 3)
             {
@@ -210,6 +216,11 @@ namespace newMobile
         private void DeleteElement(object sender, EventArgs e)
         {
             UnifiedDataStorage.DeleteElementFromTaskList(this);
+        }
+
+        private void CreateNotification(object sender, EventArgs e)
+        {
+            
         }
     }
 }

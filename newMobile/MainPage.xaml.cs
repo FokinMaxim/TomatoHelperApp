@@ -38,8 +38,7 @@ namespace newMobile
             Buttons = ButtonCreator.AlternativeWay(new string[] {
                 "newMobile.images.timer.png", "newMobile.images.tasklist.png",
                 "newMobile.images.calender.png", "newMobile.images.settings.png"  });
-            //foreach (var button in Buttons)
-            //    button.Value.BackgroundColor = HeadTimer.BackgroundColors;
+            
             Buttons["timer"].Clicked += StartTimer;
             Buttons["tasklist"].Clicked += MoveToTaskList;
             Buttons["calender"].Clicked += MoveToCalendar;

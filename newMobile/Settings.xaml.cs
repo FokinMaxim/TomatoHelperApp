@@ -84,7 +84,7 @@ namespace newMobile
                 FontSize = 50,
                 FontFamily = "Grandstander",
             }
-            , () => new Rectangle(137, 20, 155, 64));
+            , () => new Rectangle((this.Width - 120)/2, 20, 155, 64)); //Rectangle(137, 20, 155, 64));
 
             MyLayout.Children.Add(new Label()
             {
@@ -92,15 +92,16 @@ namespace newMobile
                 FontSize = 50,
                 FontFamily = "Grandstander",
             }
-            , () => new Rectangle(129, 201, 170, 64));
-
+            , () => new Rectangle((this.Width - 135) / 2, 201, 170, 64)); //Rectangle(129, 201, 170, 64))
+            var lab = new Label() {Text = "LONG BREACK" };
+            var labsize = new Size(lab.Width, lab.Height);
             MyLayout.Children.Add(new Label()
             {
                 Text = "LONG BREAK",
                 FontSize = 50,
                 FontFamily = "Grandstander",
             }
-            , () => new Rectangle(41, 382, 346, 64));
+            , () => new Rectangle(((int)this.Width - 270) / 2, 382, 346, 64)); //41
 
 
             var workEntry = new Entry()
@@ -117,7 +118,7 @@ namespace newMobile
             };
             workEntry.Completed += SetActivityTime;
             workEntry.TextChanged += timeChanged;
-            MyLayout.Children.Add(workEntry, () => new Rectangle(98, 84, 234, 94));
+            MyLayout.Children.Add(workEntry, () => new Rectangle(((int)this.Width - 155) / 2, 84, 155, 94));
 
             var breakEntry = new Entry()
             {
@@ -133,7 +134,7 @@ namespace newMobile
             };
             breakEntry.Completed += SetShortRestTime;    
             breakEntry.TextChanged += timeChanged;
-            MyLayout.Children.Add(breakEntry, () => new Rectangle(121, 265, 187, 96));
+            MyLayout.Children.Add(breakEntry, () => new Rectangle(((int)this.Width - 155) / 2, 265, 155, 96));
 
             var longBreakEntry = new Entry()
             {
@@ -149,7 +150,7 @@ namespace newMobile
             };
             longBreakEntry.Completed += SetLongRestTime;
             longBreakEntry.TextChanged += timeChanged;
-            MyLayout.Children.Add(longBreakEntry, () => new Rectangle(109, 436, 223, 96));
+            MyLayout.Children.Add(longBreakEntry, () => new Rectangle(((int)this.Width - 155) / 2, 436, 155, 96));
         }
 
         private void timeChanged(object sender, EventArgs e)
