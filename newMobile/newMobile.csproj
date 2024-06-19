@@ -24,12 +24,17 @@
     <None Remove="images\taskBackground.png" />
     <None Remove="images\tasklist.png" />
     <None Remove="images\timer.png" />
+    <None Remove="images\trash-svgrepo-com.jpg" />
+    <None Remove="images\trash-svgrepo-com.svg" />
     <None Remove="images\Vector.svg" />
     <None Remove="tomato.png" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="images\settingsLightBackground.png" />
+    <EmbeddedResource Include="images\trash-svgrepo-com.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

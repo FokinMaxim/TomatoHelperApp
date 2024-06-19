@@ -117,7 +117,7 @@ namespace newMobile
         public string Name;
         public DateTime DateTime;
         public Frame DisplayElement;
-        public Button DeleteButton;
+        public ImageButton DeleteButton;
         public Button SaveButton;
 
         public TaskListElement(string name, DateTime dateTime)
@@ -150,25 +150,26 @@ namespace newMobile
             SaveButton = new Button()
             {
                 Text = "Save",
+                WidthRequest = 55,
+                FontSize = 12,
                 BackgroundColor = Color.FromHex("#FFAAAA"),
+                Margin = 0,
             };
             SaveButton.Clicked += CreateNotification;
 
-            DeleteButton = new Button()
+            DeleteButton = new ImageButton()
             {
-                Text = "Delete",
-                TextColor = Color.Red,
+                Source = ImageSource.FromResource("newMobile.images.trash-svgrepo-com.jpg"),
+                WidthRequest = 50,
                 BackgroundColor = Color.FromHex("#FFAAAA"),
-                HorizontalOptions = LayoutOptions.EndAndExpand,
-                VerticalOptions = LayoutOptions.Center,
+                Margin = 0,
             };
             DeleteButton.Clicked += DeleteElement;
 
 
-
             var Layout = new StackLayout()
             {
-                Children = { nameLable, dateLabel, SaveButton, DeleteButton },
+                Children = { nameLable, dateLabel,  SaveButton, DeleteButton},
                 BackgroundColor = Color.FromHex("FFAAAA"),
                 Orientation = StackOrientation.Horizontal,
             };
