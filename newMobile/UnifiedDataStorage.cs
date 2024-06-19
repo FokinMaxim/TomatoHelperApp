@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Xamarin.Forms;
+
 using Plugin.LocalNotification;
 
 
@@ -117,6 +118,7 @@ namespace newMobile
         public DateTime DateTime;
         public Frame DisplayElement;
         public Button DeleteButton;
+        public Button SaveButton;
 
         public TaskListElement(string name, DateTime dateTime)
         {
@@ -145,12 +147,12 @@ namespace newMobile
             dateLabel.TextChanged += TimeChanged;
             dateLabel.Completed += NewDateSet;
 
-            var SaveButtun = new Button()
+            SaveButton = new Button()
             {
                 Text = "Save",
                 BackgroundColor = Color.FromHex("#FFAAAA"),
-                VerticalOptions = LayoutOptions.Center,
             };
+            SaveButton.Clicked += CreateNotification;
 
             DeleteButton = new Button()
             {
@@ -159,7 +161,6 @@ namespace newMobile
                 BackgroundColor = Color.FromHex("#FFAAAA"),
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Center,
-                Margin = 5
             };
             DeleteButton.Clicked += DeleteElement;
 
@@ -167,7 +168,7 @@ namespace newMobile
 
             var Layout = new StackLayout()
             {
-                Children = { nameLable, dateLabel, DeleteButton },
+                Children = { nameLable, dateLabel, SaveButton, DeleteButton },
                 BackgroundColor = Color.FromHex("FFAAAA"),
                 Orientation = StackOrientation.Horizontal,
             };
@@ -185,6 +186,8 @@ namespace newMobile
             DisplayElement = frame;
         }
 
+
+
         private void NewDateSet(object sender, EventArgs e)
         {
             var entry = (Entry)sender;
@@ -196,18 +199,18 @@ namespace newMobile
         {
             var entry = (Entry)sender;
             Name = entry.Text;
+            SaveButton.TextColor = Color.Black;
         }
 
         private void TimeChanged(object sender, EventArgs e)
         {
- 
+            SaveButton.TextColor = Color.Black;
             var i = 0;
             if (!(sender is Entry)) return;
             var entry = (Entry)sender;
 
             if (entry.Text.Length == 3)
             {
-
                 var newText = entry.Text.Remove(entry.Text.Length - 1) + ":" + entry.Text[entry.Text.Length - 1];
                 entry.Text = newText;
             }
@@ -220,7 +223,18 @@ namespace newMobile
 
         private void CreateNotification(object sender, EventArgs e)
         {
-            
+            SaveButton.TextColor = Color.Green;
+            var now = DateTime.Now;
+            var notification = new NotificationRequest()
+            {
+                BadgeNumber = 1,
+                NotificationId = 69,
+                Title = Name,
+                Description = "Dedline is approach",
+                NotifyTime = new DateTime(now.Year, now.Month, now.Day, DateTime.Minute, DateTime.Second, 0),
+            };
+
+            NotificationCenter.Current.Show(notification);
         }
     }
 }
